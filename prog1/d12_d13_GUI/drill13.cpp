@@ -4,12 +4,6 @@
 /*
 g++ drill13.cpp Graph.cpp Window.cpp GUI.cpp Simple_window.cpp -o d13 `fltk-config --ldflags --use-images`
 */
-/*
-void Lines::add(Point p1, Point p2)
-{
-	Shape::add(p1);
-	Shape::add(p2);
-}*/
 
 int main()
 {
@@ -24,6 +18,7 @@ int main()
     int y_size = win.y_max();
     int x_grid = 100;
 	int y_grid = 100;
+	int grid_size = 100;
 	
 	Lines grid;
 	for (int x = x_grid; x <= 800; x+=x_grid)
@@ -34,10 +29,7 @@ int main()
 	{
 		grid.add(Point(0,y),Point(x_size,y));
 	}
-	Image i2001 {Point{0,0},"200x200.jpg"};
-	Image i2002 {Point{0,600},"200x200.jpg"};
-	Image i2003 {Point{600,0},"200x200.jpg"};
-	Image i2004 {Point{600,600},"200x200.jpg"};
+	win.attach(grid);
 
 	Vector_ref<Rectangle> vr;
 
@@ -48,13 +40,33 @@ int main()
 		win.attach(vr[vr.size()-1]);
 	}
 
+	Vector_ref<Image> vi;
 
-	win.attach(grid);
+	vi.push_back(new Image(Point{0,200}, "200x200.jpg"));
+	vi.push_back(new Image(Point{0,400}, "200x200.jpg"));
+	vi.push_back(new Image(Point{0,600}, "200x200.jpg"));
 
-	win.attach(i2001);
-	win.attach(i2002);
-	win.attach(i2003);
-	win.attach(i2004);
+	constexpr int image_size = 200;
 
+	for (int i = 0; i < vi.size(); ++i)
+	{
+		vi[i].set_mask(Point{0,0}, image_size, image_size);
+		win.attach(vi[i]);
+	}
+
+	Image logo(Point{0,0}, "badge.jpg");
+	logo.set_mask(Point{0,0},100, 100);
+	win.attach(logo);
+	
+
+	for (int i = 0; i < 8; ++i)
+	{
+		for (int j = 0; j < 8; ++j)
+		{
+			win.wait_for_button();
+			if(j < 7) logo.move(100,0);
+			else logo.move(-700,100);
+		}
+	}
 	win.wait_for_button();
 }
